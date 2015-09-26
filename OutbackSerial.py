@@ -101,16 +101,14 @@ class inverter:
         #print "inverter current %d" % self.inverter_current
         #print "charge current %d" % self.charge_current
         
-        self.energy=self.energy+(self.power*dt)/3600/1000 # energy in kWH from 2nd system    
+        self.energy=self.energy+(self.power*dt)/3600/1000 # energy in kWH 
         if self.host is not None: # if we have a database to post to
             if self.date !=date.toordinal(date.today()):
                 con=mdb.connect(host=self.host,db=self.db,user=self.user,passwd=self.passwd)
                 with con:
                     cur=con.cursor()
                     statement="INSERT INTO daily(time,energy,sunny) VALUES (%s, %s, %s)"    
-                    #print statement % (rp1,rp2,p1,p2,a1,a2,v,power,power_mon.energy)
                     cur.execute(statement,(date.fromordinal(self.date),self.energy))
-                    #print "number of rows updated: %d" % cur.rowcount
                     con.commit()
                     cur.close()
                 con.close()
